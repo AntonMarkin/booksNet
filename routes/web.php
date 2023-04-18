@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,3 +20,6 @@ Auth::routes();
 
 Route::get('/', [PageController::class, 'index'])->name('home');
 Route::get('/profile/{id}', [PageController::class, 'getProfilePage'])->name('profile');
+
+Route::post('/comment/new', [CommentsController::class, 'newComment'])->name('new_comment');
+Route::get('/comment/{id}/delete', [CommentsController::class, 'deleteComment'])->name('delete_comment');

@@ -48,8 +48,8 @@
                         @endif
                     @else
                         <li class="nav-item">
-                            <a id="navbarDropdown" class="nav-link " href="#" role="button"
-                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <a id="navbarDropdown" class="nav-link " href="{{ route('profile', ['id' => Auth::id()]) }}" role="button"
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ Auth::user()->email }}
                             </a>
                         </li>

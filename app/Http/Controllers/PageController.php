@@ -23,15 +23,21 @@ class PageController extends Controller
     {
         $id = $this->getProfileId();
         $user = User::findOrFail($id);
-        $comments = Comment::where('profile_id', $id)->limit(5)->get();
+        $comments = Comment::where('profile_id', $id)
+            ->where('status', '!=', 'deleted')
+            ->limit(5)
+            ->get();
         return view('profile', compact('user', 'comments'));
     }
     public function getAllComments()
     {
-        $comments = Comment::where('profile_id', $this->getProfileId())->offset(5)->get();
+        $comments = Comment::where('profile_id', $this->getProfileId())
+            ->where('status', '!=', 'deleted')
+            ->offset(5)
+            ->get();
         return $comments;
     }
-    public function getProfileId()
+    public static function getProfileId()
     {
         $id = \request()->segment(2);
         settype($id, 'integer');
