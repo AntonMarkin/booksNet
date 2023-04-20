@@ -6,6 +6,17 @@
     <div class="container">
         <div class="row justify-content-center">
             <p>{{ $user->email }}</p>
+            @if(Auth::check() && $user->id != Auth::id())
+                <form class="mb-2" method="post" action="{{ route('change_access') }}">
+                    @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
+                    @if(!isset($access->access))
+                        <input type="submit" class="btn btn-outline-primary" value="Дать доступ к библиотеке">
+                    @elseif($access->access == true)
+                        <input type="submit" class="btn btn-outline-warning" value="Отключить доступ к библиотеке">
+                    @endif
+                </form>
+            @endif
             <hr class="featurette-divider">
 
             <h2>Комментарии:</h2>
@@ -19,7 +30,6 @@
             <div id="comments"></div>
         </div>
         <script>
-            
             $(document).on('click', '#get-all', function () {
                 $('#get-all').hide();
                 $.ajax({
@@ -31,6 +41,7 @@
                     }
                 });
             });
+
             function getAnswerForm(id) {
                 $.ajax({
                     url: "/comment/" + id + "/answer",

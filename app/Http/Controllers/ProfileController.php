@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Access;
 use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -25,7 +26,8 @@ class ProfileController extends Controller
         if ($user) {
             $comments = Comment::getNotDeletedComments($user->id, 5);
         }
-        return view('profile', compact('user', 'comments'));
+        $access = Access::checkAccess($id, Auth::id());
+        return view('profile', compact('user', 'comments', 'access'));
     }
 
     /**
@@ -36,6 +38,7 @@ class ProfileController extends Controller
      */
     public function getAllComments($id)
     {
+        settype($id, 'integer');
         $user = User::findOrFail($id);
         $comments = null;
         if ($user) {
@@ -92,6 +95,15 @@ class ProfileController extends Controller
         settype($id, 'integer');
         Comment::deleteComment($id);
         return redirect()->back()->with('message', 'Комментарий удалён');
+    }
+
+    public function changeAccess(Request $request)
+    {
+        $valid = $request->validate([
+            'user_id' => 'required|integer'
+        ]);
+        Access::changeAccess($valid['user_id'], Auth::id());
+        return redirect()->back();
     }
 
 }

@@ -1,7 +1,7 @@
 <form class="comment-form" method="post" action="{{ route('new_comment') }}" >
     @csrf
-    <input type="hidden" name="profile_id" @if(isset($comments)) value="{{ $comments->first()->profile_id }}" @elseif(isset($post)) value="{{ $post->profile_id }}" @endif>
-    <div class="card mb-2 @if(isset($post)) border-3 mb-4 @endif">
+    <input type="hidden" name="profile_id" @if(isset($user)) value="{{ $user->id }}" @elseif(isset($post)) value="{{ $post->profile_id }}" @endif>
+    <div class="card mb-2 @if(isset($post)) border-3 mb @endif">
         <div class="card-header">
             @if(isset($post->id))
                 <p class="card-text"><small class="text-body-secondary"><b>Ответ на комментарий пользователя: </b>
