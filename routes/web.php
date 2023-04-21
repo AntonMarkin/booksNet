@@ -32,6 +32,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/comment/{id}/answer', [ProfileController::class, 'getAnswerForm'])->name('answer_form');
 
     Route::get('/library/{id}', [LibraryController::class, 'index'])->name('library')->middleware(\App\Http\Middleware\LibraryAccess::class);
+    Route::post('/library/{id}', [LibraryController::class, 'updateOrCreateBook']);
+
+    Route::get('/delete-book/{id}', [LibraryController::class, 'deleteBook'])->name('delete_book');
+    Route::get('/edit-book/{id}', [LibraryController::class, 'getBook'])->name('edit_book');
+    Route::post('/edit-book/{id}', [LibraryController::class, 'updateOrCreateBook']);
+
 
     Route::get('/user/comments', [UserCommentsController::class, 'index'])->name('user_comments');
     Route::post('/user/change-access', [ProfileController::class, 'changeAccess'])->name('change_access');

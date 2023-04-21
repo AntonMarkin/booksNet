@@ -7,25 +7,29 @@
         <div class="row justify-content-center">
             <p>{{ $user->email }}</p>
             @if(Auth::check() && $user->id != Auth::id())
-                <form class="mb-2" method="post" action="{{ route('change_access') }}">
-                    @csrf
-                    <input type="hidden" name="user_id" value="{{ $user->id }}">
-                    @if(!isset($access->access))
-                        <input type="submit" class="btn btn-outline-primary" value="Дать доступ к библиотеке">
-                    @elseif($access->access == true)
-                        <input type="submit" class="btn btn-outline-warning" value="Отключить доступ к библиотеке">
-                    @endif
-                </form>
+                <div class="mb-2 row">
+                    <form method="post" action="{{ route('change_access') }}">
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                        @if(!isset($access->access))
+                            <input type="submit" class="btn btn-outline-primary col-sm-4" value="Дать доступ к библиотеке">
+                        @elseif($access->access == true)
+                            <input type="submit" class="btn btn-outline-warning col-sm-4" value="Отключить доступ к библиотеке">
+                        @endif
+                        <a class="col-sm-3 btn btn-outline-dark ms-2" href="{{ route('library', ['id', $user->id]) }}">Перейти к библиотеке</a>
+                    </form>
+
+                </div>
             @endif
             <hr class="featurette-divider">
 
             <h2>Комментарии:</h2>
             @if(Auth::check())
                 <h3>Новый коментарий</h3>
-                @include('comment_form')
+                @include('profile.comment_form')
             @endif
             <hr>
-            @include('comments')
+            @include('profile.comments')
             <button class="btn btn-link" id="get-all">Показать все комментарии</button>
             <div id="comments"></div>
         </div>

@@ -23,6 +23,6 @@ class LibraryAccess
         if (isset(Access::checkAccess(Auth::id(), $authorId)->access) || $authorId == Auth::id()) {
             return $next($request);
         }
-        return redirect('/');
+        return redirect('/')->with('warning', 'У вас нет доступа к этой библиотеке');
     }
 }

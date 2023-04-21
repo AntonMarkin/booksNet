@@ -77,8 +77,20 @@
             </div>
         </div>
     </nav>
-
     <main class="py-4">
+        @if(Session::has('message'))
+            <div class="alert alert-primary">
+                <p>{{Session::get('message')}}</p>
+            </div>
+        @elseif(Session::has('warning'))
+            <div class="alert alert-warning">
+                <p>{{Session::get('warning')}}</p>
+            </div>
+        @elseif(Session::has('deleted'))
+            <div class="alert alert-danger">
+                <p>{{Session::get('deleted')}}</p>
+            </div>
+        @endif
         @yield('content')
     </main>
 </div>

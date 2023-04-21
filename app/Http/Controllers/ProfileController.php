@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class ProfileController extends Controller
 {
     /**
-     * Show the application profile page.
+     * Show the authorized user profile page.
      *
      * @param integer $id
      * @return \Illuminate\Contracts\Support\Renderable
@@ -27,7 +27,7 @@ class ProfileController extends Controller
             $comments = Comment::getNotDeletedComments($user->id, 5);
         }
         $access = Access::checkAccess($id, Auth::id());
-        return view('profile', compact('user', 'comments', 'access'));
+        return view('profile.profile', compact('user', 'comments', 'access'));
     }
 
     /**
@@ -81,7 +81,7 @@ class ProfileController extends Controller
         ]);
         $valid['user_id'] = Auth::id();
         Comment::create($valid);
-        return redirect()->back();
+        return redirect()->back()->with('message', 'Комментарий добавлен');
     }
 
     /**
@@ -94,16 +94,26 @@ class ProfileController extends Controller
     {
         settype($id, 'integer');
         Comment::deleteComment($id);
-        return redirect()->back()->with('message', 'Комментарий удалён');
+        return redirect()->back()->with('deleted', 'Комментарий удалён');
     }
 
+    /**
+     * Changes access to the library of an authorized user
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
     public function changeAccess(Request $request)
     {
         $valid = $request->validate([
             'user_id' => 'required|integer'
         ]);
-        Access::changeAccess($valid['user_id'], Auth::id());
-        return redirect()->back();
+        if(Access::changeAccess($valid['user_id'], Auth::id())){
+            $message = 'Вы дали  доступ к библиотеке для этого пользователя';
+        } else {
+            $message = 'Вы отключили доступ к библиотеке для этого пользователя';
+        }
+        return redirect()->back()->with('message', $message);
     }
 
 }

@@ -8,7 +8,7 @@
         <div class="row justify-content-center">
             <p>{{ $book->name }}</p>
             <hr class="featurette-divider">
-            <textarea class="form-control" readonly>{{ $book->text }}</textarea>
+            @include('library.book_form')
         </div>
     </div>
 

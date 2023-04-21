@@ -24,7 +24,7 @@ class BookAccess
         if ($book->share || $book->user_id == Auth::id()) {
             return $next($request);
         }
-        return redirect('/');
+        return redirect('/')->with('warning', 'У вас нет доступа к этой книге');
     }
 }
 
