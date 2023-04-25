@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +14,7 @@ class UserCommentsController extends Controller
      */
     public function index()
     {
-        $comments = Comment::getUserComments(Auth::id());
+        $comments = Auth::user()->comments;
         return view('user_comments', compact('comments'));
     }
 }

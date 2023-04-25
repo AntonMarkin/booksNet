@@ -15,7 +15,7 @@
                     <div class="row mb-3"><input type="submit" class="btn btn-outline-warning col-sm-4"
                                                  value="Закрыть доступ по ссылке">
                         <input type="text" class="ms-2 form-control col-sm" readonly
-                               value="{{ route('get_book', ['id' => $book->id]) }}"></div>
+                               value="{{ route('get_book', ['book' => $book->id]) }}"></div>
                 @else
                     <div class="row mb-3"><input type="submit" class="btn btn-outline-primary col-sm-4"
                                                  value="Поделиться книгой по ссылке"></div>

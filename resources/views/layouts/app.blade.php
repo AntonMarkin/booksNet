@@ -33,7 +33,7 @@
                             <a class="nav-link" href="{{ route('user_comments') }}">Мои комментарии</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('library', ['id' => Auth::id()]) }}">Моя библиотека</a>
+                            <a class="nav-link" href="{{ route('library', ['user' => Auth::id()]) }}">Моя библиотека</a>
                         </li>
                     @endif
                 </ul>
@@ -55,7 +55,7 @@
                         @endif
                     @else
                         <li class="nav-item">
-                            <a id="navbarDropdown" class="nav-link " href="{{ route('profile', ['id' => Auth::id()]) }}"
+                            <a id="navbarDropdown" class="nav-link " href="{{ route('profile', ['user' => Auth::id()]) }}"
                                role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ Auth::user()->email }}

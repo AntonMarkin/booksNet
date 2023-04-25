@@ -12,7 +12,7 @@
                             <div class="card mt-2 text-center">
                                 <div class="card-body">
                                     <h5 class="card-title">{{$user->email}}</h5>
-                                    <a href="{{ route('profile', ['id' => $user->id]) }}" class="btn btn-outline-dark">Смотреть
+                                    <a href="{{ route('profile', ['user' => $user->id]) }}" class="btn btn-outline-dark">Смотреть
                                         профиль</a>
                                 </div>
                             </div>

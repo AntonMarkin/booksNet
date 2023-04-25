@@ -14,35 +14,27 @@ class Book extends Model
         'name',
         'text'
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * Get all book by user_id
-     *
-     * @param integer $userId
-     * @return Book
-     */
-    static public function getUserBooks($userId)
-    {
-        return Book::where('user_id', $userId)->get();
-    }
-
-    /**
      * Change field "share" to the opposite value
      *
      * @param integer $bookId
-     * @return Book
+     * @return boolean
      */
     static public function bookShare($bookId)
     {
         $book = Book::findOrFail($bookId);
-        if($book->share){
-            return Book::where('id', $bookId)->update(['share' => false]);
+        if ($book->share) {
+            Book::where('id', $bookId)->update(['share' => false]);
+            return false;
         } else {
-            return Book::where('id', $bookId)->update(['share' => true]);
+            Book::where('id', $bookId)->update(['share' => true]);
+            return true;
         }
     }
 

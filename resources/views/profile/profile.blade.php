@@ -16,7 +16,7 @@
                         @elseif($access->access == true)
                             <input type="submit" class="btn btn-outline-warning col-sm-4" value="Отключить доступ к библиотеке">
                         @endif
-                        <a class="col-sm-3 btn btn-outline-dark ms-2" href="{{ route('library', ['id', $user->id]) }}">Перейти к библиотеке</a>
+                        <a class="col-sm-3 btn btn-outline-dark ms-2" href="{{ route('library', ['user', $user->id]) }}">Перейти к библиотеке</a>
                     </form>
 
                 </div>
@@ -52,7 +52,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
-                        $('#answer_' + id).append(data.answerForm)
+                            $('#answer_' + id).append(data.answerForm)
                     }
                 });
             }

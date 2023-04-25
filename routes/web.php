@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\UserCommentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
@@ -21,23 +22,22 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/profile/{id}', [ProfileController::class, 'index'])->name('profile');
-Route::get('/profile/{id}/all',  [ProfileController::class, 'getAllComments']);
+Route::get('/profile/{user}', [ProfileController::class, 'index'])->name('profile');
+Route::get('/profile/{user}/all',  [ProfileController::class, 'getComments']);
 
-Route::get('/book/{id}', [LibraryController::class, 'getBook'])->name('get_book')->middleware(\App\Http\Middleware\BookAccess::class);
+Route::get('/book/{book}', [LibraryController::class, 'getBook'])->name('get_book')->middleware(\App\Http\Middleware\BookAccess::class);
 
 Route::middleware('auth')->group(function () {
-    Route::post('/comment/new', [ProfileController::class, 'newComment'])->name('new_comment');
-    Route::get('/comment/{id}/delete', [ProfileController::class, 'deleteComment'])->name('delete_comment');
-    Route::get('/comment/{id}/answer', [ProfileController::class, 'getAnswerForm'])->name('answer_form');
+    Route::post('/comment/new', [CommentController::class, 'newComment'])->name('new_comment');
+    Route::get('/comment/{id}/delete', [CommentController::class, 'deleteComment'])->whereNumber('id')->name('delete_comment');
+    Route::get('/comment/{comment}/answer', [CommentController::class, 'getAnswerForm'])->name('answer_form');
 
-    Route::get('/library/{id}', [LibraryController::class, 'index'])->name('library')->middleware(\App\Http\Middleware\LibraryAccess::class);
+    Route::get('/library/{user}', [LibraryController::class, 'index'])->name('library')->middleware(\App\Http\Middleware\LibraryAccess::class);
     Route::post('/library/{id}', [LibraryController::class, 'updateOrCreateBook']);
 
-    Route::get('/delete-book/{id}', [LibraryController::class, 'deleteBook'])->name('delete_book');
-    Route::get('/edit-book/{id}', [LibraryController::class, 'getBook'])->name('edit_book');
-    Route::post('/edit-book/{id}', [LibraryController::class, 'updateOrCreateBook']);
-
+    Route::get('/delete-book/{id}', [LibraryController::class, 'deleteBook'])->whereNumber('id')->name('delete_book');
+    Route::get('/edit-book/{id}', [LibraryController::class, 'getBook'])->whereNumber('id')->name('edit_book');
+    Route::post('/edit-book/{id}', [LibraryController::class, 'updateOrCreateBook'])->whereNumber('id');
 
     Route::get('/user/comments', [UserCommentsController::class, 'index'])->name('user_comments');
     Route::post('/user/change-access', [ProfileController::class, 'changeAccess'])->name('change_access');

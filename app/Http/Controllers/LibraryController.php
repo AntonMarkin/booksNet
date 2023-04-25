@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LibraryRequest;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -13,31 +14,26 @@ class LibraryController extends Controller
     /**
      * Show the authorized user library page.
      *
-     * @param integer $id
+     * @param User $user
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index($id)
+    public function index(User $user)
     {
-        settype($id, 'integer');
-        $user = User::findOrFail($id);
-        $books = Book::getUserBooks($id);
+        $books = $user->books;
         return view('library.library', compact('user', 'books'));
     }
 
     /**
      * Show the book page.
      *
-     * @param integer $id
+     * @param Book $book
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function getBook($id)
+    public function getBook(Book $book)
     {
-        settype($id, 'integer');
-        $book = Book::findOrFail($id);
+        $view = 'library.book';
         if (\request()->segment(1) == 'edit-book') {
             $view = 'library.edit_book';
-        } elseif (\request()->segment(1) == 'book') {
-            $view = 'library.book';
         }
         return view($view, compact('book'));
     }
@@ -50,10 +46,9 @@ class LibraryController extends Controller
      */
     public function deleteBook($id)
     {
-        settype($id, 'integer');
         $userId = Auth::id();
         Book::deleteBook($id, $userId);
-        return redirect()->route('library', ['id' => $userId])->with('deleted', 'Книга удалена');
+        return redirect()->route('library', ['user' => $userId])->with('deleted', 'Книга удалена');
     }
 
     /**
@@ -65,27 +60,26 @@ class LibraryController extends Controller
     public function bookShare(Request $request)
     {
         $valid = $request->validate([
-            'book_id' => 'required|integer'
+            'book_id' => 'integer',
         ]);
-        Book::bookShare($valid['book_id']);
-        return redirect()->back()->with('message', 'Вы открыли книгу по ссылке');
+
+        $message = 'Вы закрыли книгу по ссылке';
+        if (Book::bookShare($valid['book_id'])){
+            $message = 'Вы открыли книгу по ссылке';
+        }
+        return redirect()->back()->with('message', $message);
     }
 
     /**
      * Update or create book.
      *
-     * @param Request $request
+     * @param LibraryRequest $request
      * @return RedirectResponse
      */
-    public function updateOrCreateBook(Request $request)
+    public function updateOrCreateBook(LibraryRequest $request)
     {
-        $valid = $request->validate([
-            'id' => 'required|integer',
-            'name' => 'required|max:50',
-            'text' => 'required|max:500',
-            'user_id' => 'required|integer'
-        ]);
+        $valid = $request->validated();
         Book::updateOrCreate(['id' => $valid['id']], $valid);
-        return redirect()->route('library', ['id' => Auth::id()])->with('message', 'Книга была добавлена');
+        return redirect()->route('library', ['user' => Auth::id()])->with('message', 'Книга была добавлена');
     }
 }

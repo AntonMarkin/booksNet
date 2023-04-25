@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\CommentScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,6 +18,11 @@ class Comment extends Model
         'header',
         'text'
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope(new CommentScope());
+    }
 
     public function user()
     {
@@ -39,24 +45,12 @@ class Comment extends Model
      * @param integer $offset
      * @return Comment
      */
-    static function getNotDeletedComments($profileId, $limit = null, $offset = null)
+    static function getProfileComments($profileId, $limit = null, $offset = null)
     {
         return Comment::where('profile_id', $profileId)
-            ->where('status', '!=', 'deleted')
             ->limit($limit)
             ->offset($offset)
             ->get();
-    }
-
-    /**
-     * Get comments by user id
-     *
-     * @param integer $userId
-     * @return Comment
-     */
-    static function getUserComments($userId)
-    {
-        return Comment::where('user_id', $userId)->get();
     }
 
     /**

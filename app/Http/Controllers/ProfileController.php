@@ -15,86 +15,35 @@ class ProfileController extends Controller
     /**
      * Show the authorized user profile page.
      *
-     * @param integer $id
+     * @param User $user
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index($id)
+    public function index(User $user)
     {
-        settype($id, 'integer');
-        $user = User::findOrFail($id);
         $comments = null;
         if ($user) {
-            $comments = Comment::getNotDeletedComments($user->id, 5);
+            $comments = Comment::getProfileComments($user->id, 5);
         }
-        $access = Access::checkAccess($id, Auth::id());
+        $access = Access::checkAccess($user->id, Auth::id());
         return view('profile.profile', compact('user', 'comments', 'access'));
     }
 
     /**
      * Get all the comments via Ajax by skipping the first 5
      *
-     * @param integer $id
+     * @param User $user
      * @return JsonResponse
      */
-    public function getAllComments($id)
+    public function getComments(User $user)
     {
-        settype($id, 'integer');
-        $user = User::findOrFail($id);
         $comments = null;
         if ($user) {
-            $comments = Comment::getNotDeletedComments($user->id, Comment::count(), 5);
+            $comments = Comment::getProfileComments($user->id, Comment::count(), 5);
         }
         $data = [
-            'comments' => view('comments', compact('comments'))->render(),
+            'comments' => view('profile.comments', compact('comments'))->render(),
         ];
         return response()->json($data);
-    }
-
-    /**
-     * Get comment info and rendering answer form via Ajax
-     *
-     * @param integer $id
-     * @return JsonResponse
-     */
-    public function getAnswerForm($id)
-    {
-        settype($id, 'integer');
-        $post = Comment::findOrFail($id);
-        $data = [
-            'answerForm' => view('comment_form', compact('post'))->render(),
-        ];
-        return response()->json($data);
-    }
-
-    /**
-     * Create new record in comments table
-     * @param Request $request
-     * @return RedirectResponse
-     */
-    public function newComment(Request $request)
-    {
-        $valid = $request->validate([
-            'header' => 'required|max:30',
-            'text' => 'required|max:200',
-            'profile_id' => 'required|integer',
-            'comment_id' => 'integer'
-        ]);
-        $valid['user_id'] = Auth::id();
-        Comment::create($valid);
-        return redirect()->back()->with('message', 'Комментарий добавлен');
-    }
-
-    /**
-     * Change comment status to deleted
-     *
-     * @param integer $id
-     * @return RedirectResponse
-     */
-    public function deleteComment($id)
-    {
-        settype($id, 'integer');
-        Comment::deleteComment($id);
-        return redirect()->back()->with('deleted', 'Комментарий удалён');
     }
 
     /**
@@ -108,10 +57,9 @@ class ProfileController extends Controller
         $valid = $request->validate([
             'user_id' => 'required|integer'
         ]);
-        if(Access::changeAccess($valid['user_id'], Auth::id())){
+        $message = 'Вы отключили доступ к библиотеке для этого пользователя';
+        if (Access::changeAccess($valid['user_id'], Auth::id())) {
             $message = 'Вы дали  доступ к библиотеке для этого пользователя';
-        } else {
-            $message = 'Вы отключили доступ к библиотеке для этого пользователя';
         }
         return redirect()->back()->with('message', $message);
     }
