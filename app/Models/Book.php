@@ -45,7 +45,7 @@ class Book extends Model
      * @param integer $userId
      * @return Book
      */
-    static public function deleteBook($bookId, $userId)
+    static public function deletion($bookId, $userId)
     {
         return Book::where('id', $bookId)->where('user_id', $userId)->delete();
     }

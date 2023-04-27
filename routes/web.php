@@ -23,13 +23,13 @@ Auth::routes();
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/profile/{user}', [ProfileController::class, 'index'])->name('profile');
-Route::get('/profile/{user}/all',  [ProfileController::class, 'getComments']);
+Route::get('/profile/{user}/all',  [ProfileController::class, 'comments']);
 
 Route::get('/book/{book}', [LibraryController::class, 'getBook'])->name('get_book')->middleware(\App\Http\Middleware\BookAccess::class);
 
 Route::middleware('auth')->group(function () {
-    Route::post('/comment/new', [CommentController::class, 'newComment'])->name('new_comment');
-    Route::get('/comment/{id}/delete', [CommentController::class, 'deleteComment'])->whereNumber('id')->name('delete_comment');
+    Route::post('/comment/new', [CommentController::class, 'create'])->name('new_comment');
+    Route::get('/comment/{comment}/delete', [CommentController::class, 'delete'])->name('delete_comment');
     Route::get('/comment/{comment}/answer', [CommentController::class, 'getAnswerForm'])->name('answer_form');
 
     Route::get('/library/{user}', [LibraryController::class, 'index'])->name('library')->middleware(\App\Http\Middleware\LibraryAccess::class);

@@ -47,7 +47,7 @@ class LibraryController extends Controller
     public function deleteBook($id)
     {
         $userId = Auth::id();
-        Book::deleteBook($id, $userId);
+        Book::deletion($id, $userId);
         return redirect()->route('library', ['user' => $userId])->with('deleted', 'Книга удалена');
     }
 

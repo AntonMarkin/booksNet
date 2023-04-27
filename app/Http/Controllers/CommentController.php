@@ -30,23 +30,26 @@ class CommentController extends Controller
      * @param CommentRequest $request
      * @return RedirectResponse
      */
-    public function newComment(CommentRequest $request)
+    public function create(CommentRequest $request)
     {
-        $valid = $request->validated();
-        $valid['user_id'] = Auth::id();
-        Comment::create($valid);
+        $data = $request->validated();
+        $data['user_id'] = Auth::id();
+        Comment::create($data);
         return redirect()->back()->with('message', 'Комментарий добавлен');
     }
 
     /**
      * Change comment status to deleted
      *
-     * @param integer $id
+     * @param Comment $comment
      * @return RedirectResponse
      */
-    public function deleteComment($id)
+    public function delete(Comment $comment)
     {
-        Comment::deleteComment($id);
-        return redirect()->back()->with('deleted', 'Комментарий удалён');
+        if ($comment->user_id == Auth::id() || $comment->profile_id == Auth::id()) {
+            Comment::deletion($comment);
+            return redirect()->back()->with('deleted', 'Комментарий удалён');
+        }
+        return redirect()->back()->with('warning', 'У вас нет прав на удаление данного комментария');
     }
 }

@@ -22,7 +22,7 @@ class ProfileController extends Controller
     {
         $comments = null;
         if ($user) {
-            $comments = Comment::getProfileComments($user->id, 5);
+            $comments = $user->profileComments()->limit(5)->get();
         }
         $access = Access::checkAccess($user->id, Auth::id());
         return view('profile.profile', compact('user', 'comments', 'access'));
@@ -34,11 +34,11 @@ class ProfileController extends Controller
      * @param User $user
      * @return JsonResponse
      */
-    public function getComments(User $user)
+    public function comments(User $user)
     {
         $comments = null;
         if ($user) {
-            $comments = Comment::getProfileComments($user->id, Comment::count(), 5);
+            $comments =  $user->profileComments()->limit(Comment::count())->offset(5)->get();
         }
         $data = [
             'comments' => view('profile.comments', compact('comments'))->render(),

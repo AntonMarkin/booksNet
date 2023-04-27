@@ -20,7 +20,7 @@
                         </button>
                     @endif
                     @if(Auth::id() == $comment->profile_id || Auth::id() == $comment->user_id)
-                        <a href="{{ route('delete_comment', ['id' => $comment->id]) }}"
+                        <a href="{{ route('delete_comment', ['comment' => $comment->id]) }}"
                            class="btn btn-outline-danger delete">Удалить</a>
                     @endif
                 </div>
